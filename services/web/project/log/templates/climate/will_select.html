@@ -1,0 +1,75 @@
+{% extends 'climate/base.html' %}
+
+
+{% block content %}
+
+
+
+<p></p>
+<div class="container">
+
+
+    <form method="POST" id="choose_country">
+        {{ context.form.hidden_tag() }}
+
+        <!--        Mobile Choose country-->
+
+        <div class="d-lg-none">
+            <h4> Choose country</h4>
+            <label for="country"></label>
+            <select class="form-select" form="choose_country" id="country" name="country" required>
+                <option selected disabled hidden>Choose country</option>
+                {% for country in context.countries_names %}
+                <option value="{{ country }}"> {{ country }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <!--Desktop Choose country-->
+        <div class="d-none d-lg-block">
+            <div class="row">
+                <div class="col mb-5">
+                    <h4> Choose country</h4>
+                </div>
+                <div class="col">
+                    <label for="country"></label>
+                    <select class="form-select" form="choose_country" id="country" name="country" required>
+                        <option selected  disabled hidden>Choose country</option>
+                        {% for country in context.countries_names %}
+                        <option value="{{ country }}"> {{ country }}</option>
+                        {% endfor %}
+                    </select>
+
+                </div>
+            </div>
+        </div>
+
+
+        <p></p>
+        <p></p>
+
+        <h5> Choose Period</h5>
+        <div>
+            <input type="range" class="form-range" min="1" max="77" name="over_years" id="timerange">
+            <label class="form-label"> How Many Years After: <span id="timetext">1</span></label>
+            <script>
+                          const events = ['mousemove', 'touchmove'];
+                          $.each(events, function(k,v) {
+                            $('#timerange').on(v, function() {
+                              $('#timetext').text($('#timerange').val());
+                            });
+                          });
+            </script>
+            </input>
+        </div>
+
+        <!--Button-->
+        <input type="submit" class="btn btn-primary" value="Find out" name="submit" id="submit"/>
+
+    </form>
+
+</div>
+
+
+
+{% endblock %}
+

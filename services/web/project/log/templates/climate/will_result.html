@@ -1,0 +1,29 @@
+{% extends 'climate/base.html' %}
+
+
+{% block content %}
+
+<div class="container">
+    <h5 style="color: red;" class="mb-3" ><b>Worst Scenario</b></h5>
+    <p> {{ context.worst_case }} </p>
+    <h5 style="color: #938E00" class="mb-3"><b>Intermediate Scenario</b></h5>
+    <p> {{ context.intermediate_case }} </p>
+    <h5 style="color: green" class="mb-3"><b>Best Scenario</b></h5>
+    <p> {{ context.best_case }} </p>
+</div>
+
+<div class="container">
+    <img src="{{ url_for('static', filename='images/' + figure ) }}" alt="Girl in a jacket" class="img-fluid rounded">
+</div>
+
+<div class="mt-3">
+    <div class="container" style="text-align: start">
+            <i>
+        <p> {{ context.description_best }} </p>
+        <p> {{ context.description_intermediate }} </p>
+        <p> {{ context.description_worst }} </p>
+            </i>
+    </div>
+</div>
+
+{% endblock %}
