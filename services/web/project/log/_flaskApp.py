@@ -1,26 +1,55 @@
-from flask import Blueprint
+from project.config import engine_sqlite, metadata_sqlite, connection_sqlite
+from project import forms
+from project.log._DevLogCalc import LogXY
+
+from flask import Flask, render_template, redirect, url_for, request, g, Blueprint
+from sqlalchemy import Table
+import pandas as pd
+from flask_wtf import FlaskForm
+from wtforms import FloatField, SubmitField
 
 log = Blueprint('log', __name__, template_folder='templates', static_folder='static')
 
 
 
-# import random
-#
-# from flask import Blueprint
-# import pandas as pd
-# from flask import Flask, render_template, redirect, url_for, request, g
-# from sqlalchemy import Table
-#
-# from project.config import engine_sqlite, metadata_sqlite, connection_sqlite
-# from project import forms
-#
-#
-# climate = Blueprint('climate', __name__, template_folder='templates', static_folder='static')
-#
-# @climate.route('/test')
-# def test():
-#     return 'hello'
-#
+
+@log.route('/multiply_logs', methods=['GET'])
+def ViewToRedirectMultiplyLogsResult():
+    class MultipliedLogs(FlaskForm):
+        x = FloatField()
+        y = FloatField()
+        submit = SubmitField("Find")
+
+    formMultipliedLogs = MultipliedLogs()
+
+    if formMultipliedLogs.is_submitted():
+        # country = form_select_country.country.data
+        # over_years = form_select_country.over_years.data
+        # return redirect(
+        #     url_for('climate.get_result_how_will_change_in_some_country', **{'country': country, 'over_years': over_years}))
+        True
+
+    context = {
+        'title': 'title',
+        'description': 'description',
+                }
+
+    return render_template('log/multiply_logs.html', context=context, form=formMultipliedLogs)
+
+
+@log.route('/multiply_logs_result', methods=['GET', 'POST'])
+def ViewFromRedirectMultiplyLogsResult():
+
+    log = LogXY(startLogX=1, stopLogX=1.467267915449289, startValueXLog1=25,
+                startLogY=1, stopLogY=2, startValueYLog1=3, iters=6)
+    x = log.x
+    y = log.y
+
+    return str(log._multiplyXY(x, y))
+
+
+
+
 # def _get_countries_names() -> list:
 #     tables = list(metadata_sqlite.tables.values())
 #     tables = tables[:212]
@@ -162,7 +191,7 @@ log = Blueprint('log', __name__, template_folder='templates', static_folder='sta
 #     }
 #
 #
-#     return render_template('climate/will_select.html', context=context)
+#     return render_template('climate/multiply_logs_result.html', context=context)
 #
 #
 # @climate.route('/how_will_average_temperature_change_in', methods=['GET'])
