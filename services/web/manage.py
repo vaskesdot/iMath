@@ -1,7 +1,6 @@
 from flask.cli import FlaskGroup
 
 from project.__init__ import app, db
-from project.ecprice.fixtures import seed_data as seed_ecprice_data
 
 cli = FlaskGroup(app)
 
@@ -10,9 +9,9 @@ cli = FlaskGroup(app)
 def dev():
     pass
 
-@cli.command("seed_db")
-def seed_initial_data_to_db():
-    seed_ecprice_data()
+# @cli.command("seed_db")
+# def seed_initial_data_to_db():
+#     seed_ecprice_data()
 
 
 @cli.command("create_db")

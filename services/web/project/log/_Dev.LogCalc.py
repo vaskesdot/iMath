@@ -1,13 +1,6 @@
 import json
 from pprint import pprint
 import math
-
-import matplotlib.pyplot as plt
-import numpy as np
-# x = np.linspace(0, 10, 100)
-# y = np.exp(x)
-# plt.semilogy(x, y)
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas
