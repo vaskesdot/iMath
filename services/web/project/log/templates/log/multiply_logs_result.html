@@ -1,0 +1,26 @@
+{% extends 'log/base.html' %}
+
+
+{% block content %}
+
+<div class="container">
+    <div>
+        <ul class="list-group">
+            {% for item in x %}
+                <li class="list-group-item"
+                    class="list-group-item text-right"> {{ item }} </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+
+<!--<div class="container">-->
+<!--    <h5 style="color: red;" class="mb-3" ><b>Y X-axis </b></h5>-->
+<!--    <p> {{ x }} </p>-->
+<!--    <h5 style="color: #938E00" class="mb-3"><b> X-axis </b></h5>-->
+<!--    <p> {{ y }} </p>-->
+<!--    <h5 style="color: green" class="mb-3"><b> X multyply Y axis </b></h5>-->
+<!--    <p> {{ xy }} </p>-->
+<!--</div>-->
+
+{% endblock %}

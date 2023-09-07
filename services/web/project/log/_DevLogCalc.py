@@ -128,6 +128,9 @@ class LogXY:
 log = LogXY(startLogX=1, stopLogX=1.467267915449289, startValueXLog1=25,
             startLogY=1, stopLogY=2, startValueYLog1=3, iters=6)
 
+# X - Деньги по итерациям
+# Y - время
+# Нужно найти
 
 pprint(log.getInfo())
 

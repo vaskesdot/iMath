@@ -6,28 +6,39 @@ from flask import Flask, render_template, redirect, url_for, request, g, Bluepri
 from sqlalchemy import Table
 import pandas as pd
 from flask_wtf import FlaskForm
-from wtforms import FloatField, SubmitField
+from wtforms import FloatField, SubmitField, IntegerField
 
 log = Blueprint('log', __name__, template_folder='templates', static_folder='static')
 
 
+class MultipliedLogs(FlaskForm):
+    startLogX = FloatField()
+    stopLogX = FloatField()
+    startValueXLog1 = FloatField()
+    startLogY = FloatField()
+    stopLogY = FloatField()
+    startValueYLog1 = FloatField()
+    iters = IntegerField()
+    submit = SubmitField("Find")
 
 
-@log.route('/multiply_logs', methods=['GET'])
+@log.route('/multiply_logs', methods=['GET', 'POST'])
 def ViewToRedirectMultiplyLogsResult():
-    class MultipliedLogs(FlaskForm):
-        x = FloatField()
-        y = FloatField()
-        submit = SubmitField("Find")
 
     formMultipliedLogs = MultipliedLogs()
 
     if formMultipliedLogs.is_submitted():
-        # country = form_select_country.country.data
-        # over_years = form_select_country.over_years.data
-        # return redirect(
-        #     url_for('climate.get_result_how_will_change_in_some_country', **{'country': country, 'over_years': over_years}))
-        True
+        return redirect(url_for('log.ViewFromRedirectMultiplyLogsResult',
+                **{
+                   'startLogX': formMultipliedLogs.startLogX.data,
+                   'stopLogX': formMultipliedLogs.stopLogX.data,
+                   'startValueXLog1': formMultipliedLogs.startValueXLog1.data,
+                   'startLogY': formMultipliedLogs.startLogY.data,
+                   'stopLogY': formMultipliedLogs.stopLogY.data,
+                   'startValueYLog1': formMultipliedLogs.startValueYLog1.data,
+                   'iters': formMultipliedLogs.iters.data,
+                   }
+                ))
 
     context = {
         'title': 'title',
@@ -39,13 +50,31 @@ def ViewToRedirectMultiplyLogsResult():
 
 @log.route('/multiply_logs_result', methods=['GET', 'POST'])
 def ViewFromRedirectMultiplyLogsResult():
+    startLogX = float(request.args.get('startLogX', default=1))
+    stopLogX = float(request.args.get('stopLogX', default=1))
+    startValueXLog1 = float(request.args.get('startValueXLog1', default=1))
+    startLogY = float(request.args.get('startLogY', default=1))
+    stopLogY = float(request.args.get('stopLogY', default=1))
+    startValueYLog1 = float(request.args.get('startValueYLog1', default=1))
+    iters = int(request.args.get('iters', default=3))
 
-    log = LogXY(startLogX=1, stopLogX=1.467267915449289, startValueXLog1=25,
-                startLogY=1, stopLogY=2, startValueYLog1=3, iters=6)
+    log = LogXY(startLogX=startLogX, stopLogX=stopLogX, startValueXLog1=startValueXLog1,
+                startLogY=startLogY, stopLogY=stopLogY, startValueYLog1=startValueYLog1, iters=iters)
+
+    # return str([startLogX, stopLogX, startValueXLog1, startLogY,
+    #            stopLogY, startValueYLog1, iters])
+
+
     x = log.x
     y = log.y
+    xy = log._multiplyXY(log.x, log.y)
+    #
+    context = {
+        'title': 'title',
+        'description': 'description',
+                }
 
-    return str(log._multiplyXY(x, y))
+    return render_template('log/multiply_logs_result.html', context=context, x=x, y=y, xy=xy)
 
 
 
