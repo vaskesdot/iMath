@@ -1,4 +1,3 @@
-import json
 from pprint import pprint
 import math
 import matplotlib.pyplot as plt
@@ -49,8 +48,8 @@ class LogXY:
                     "IterationNumber": iterationsNumber,
                             },
                 "X": {
-                    "GrowthRateIter1": self.x[1] / self.x[0],
-                    "GrowthRateIter2": self.x[2] / self.x[1],
+                    "GrowthOverIter1": self.x[1] / self.x[0],
+                    "GrowthOverIter2": self.x[2] / self.x[1],
                     "ScaleRateIter": math.log(self.x[1], self.x[0]),
                     "FirstIteration": self.x[0],
                     "FinalIteration": self.x[-1],
@@ -58,8 +57,8 @@ class LogXY:
                     "TotalScaleAllIterations": math.log(self.x[-1], self.x[0]),
                     },
                 "Y": {
-                    "GrowthRateIter1": self.y[1] / self.y[0],
-                    "GrowthRateIter2": self.y[2] / self.y[1],
+                    "GrowthOverIter1": self.y[1] / self.y[0],
+                    "GrowthOverIter2": self.y[2] / self.y[1],
                     "ScaleRateIter": math.log(self.y[2], self.y[1]),
                     "FirstIteration": self.y[0],
                     "FinalIteration": self.y[-1],
@@ -67,13 +66,13 @@ class LogXY:
                     "TotalScaleAllIterations": math.log(self.y[-1], self.y[0]),
                     },
                 "XY": {
-                    "GrowthRateIter1": self.xy[1] / self.xy[0],
-                    "GrowthRateIter2": self.xy[2] / self.xy[1],
-                    "ScaleRateIter": math.log(self.y[2], self.y[1]),
-                    "FirstIteration": self.y[0],
-                    "FinalIteration": self.y[-1],
-                    "TotalGrowthAllIterations": self.y[-1] / self.y[0],
-                    "TotalScaleAllIterations": math.log(self.y[-1], self.y[0]),
+                    "GrowthOverIter1": self.xy[1] / self.xy[0],
+                    "GrowthOverIter2": self.xy[2] / self.xy[1],
+                    "ScaleRateIter": math.log(self.xy[2], self.xy[1]),
+                    "FirstIteration": self.xy[0],
+                    "FinalIteration": self.xy[-1],
+                    "TotalGrowthAllIterations": self.xy[-1] / self.xy[0],
+                    "TotalScaleAllIterations": math.log(self.xy[-1], self.xy[0]),
             },
         }
         return info
@@ -127,20 +126,3 @@ class LogXY:
     def _log(stop: float, start: float):
         return math.log(112.5, 25)
 
-
-
-
-log = LogXY(startLogX=1, stopLogX=1.467267915449289, startValueXLog1=25,
-            startLogY=1, stopLogY=2, startValueYLog1=3, iters=6)
-
-# X - Деньги по итерациям
-# Y - время
-# Нужно найти
-
-pprint(log.getInfo())
-
-x = log.x
-y = log.y
-
-pprint(x)
-pprint(y)

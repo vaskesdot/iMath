@@ -12,14 +12,14 @@ log = Blueprint('log', __name__, template_folder='templates', static_folder='sta
 
 
 class MultipliedLogs(FlaskForm):
-    startLogX = FloatField()
-    stopLogX = FloatField()
-    startValueXLog1 = FloatField()
-    startLogY = FloatField()
-    stopLogY = FloatField()
-    startValueYLog1 = FloatField()
-    iters = IntegerField()
-    submit = SubmitField("Find")
+    iters = IntegerField(label="How many iters over to build both LogSpace: ")
+    startLogX = FloatField(label="LogX base: ")
+    stopLogX = FloatField(label="of LogX: ")
+    startValueXLog1 = FloatField(label="Use this number for LogXSpace start: ")
+    startLogY = FloatField(label="LogY base: ")
+    stopLogY = FloatField(label="of LogY: ")
+    startValueYLog1 = FloatField("Use this number for LogNSpace start: ")
+    submit = SubmitField("Calculate: ")
 
 
 @log.route('/multiply_logs', methods=['GET', 'POST'])
@@ -71,11 +71,17 @@ def ViewFromRedirectMultiplyLogsResult():
 
     #
     context = {
-        'title': 'title',
-        'description': 'description',
+        'title': 'Results for:',
+        'description': f'LogX base {startLogX} of {stopLogX},  LogX base {startLogY} of {stopLogY}, ',
                 }
 
     return render_template('log/multiply_logs_result.html', context=context, x=x, y=y, xy=xy, data=logInfo)
+
+
+@log.route('/bifurcation_veritasium', methods=['GET', 'POST'])
+def ViewFromRedirectBifurcationVeritasium():
+
+    return render_template('log/bifurcation_veritasium.html', )
 
 
 
