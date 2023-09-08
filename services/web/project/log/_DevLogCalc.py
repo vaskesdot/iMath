@@ -44,32 +44,37 @@ class LogXY:
         differenceYXstart = self.y[0] / self.x[0]
         differenceYXfinal = self.y[-1] / self.x[-1]
         info = {
-            "data": {
-                "X": {
+
+                "Overall": {
                     "IterationNumber": iterationsNumber,
-                    "GrowthRateIter": GrowthRateX,
+                            },
+                "X": {
+                    "GrowthRateIter1": self.x[1] / self.x[0],
+                    "GrowthRateIter2": self.x[2] / self.x[1],
                     "ScaleRateIter": math.log(self.x[1], self.x[0]),
                     "FirstIteration": self.x[0],
                     "FinalIteration": self.x[-1],
                     "TotalGrowthAllIterations": self.x[-1] / self.x[0],
                     "TotalScaleAllIterations": math.log(self.x[-1], self.x[0]),
-                },
+                    },
                 "Y": {
-                    "IterationNumber": iterationsNumber,
-                    "GrowthRateIter": GrowthRateY,
+                    "GrowthRateIter1": self.y[1] / self.y[0],
+                    "GrowthRateIter2": self.y[2] / self.y[1],
                     "ScaleRateIter": math.log(self.y[2], self.y[1]),
                     "FirstIteration": self.y[0],
                     "FinalIteration": self.y[-1],
                     "TotalGrowthAllIterations": self.y[-1] / self.y[0],
                     "TotalScaleAllIterations": math.log(self.y[-1], self.y[0]),
-                },
+                    },
+                "XY": {
+                    "GrowthRateIter1": self.xy[1] / self.xy[0],
+                    "GrowthRateIter2": self.xy[2] / self.xy[1],
+                    "ScaleRateIter": math.log(self.y[2], self.y[1]),
+                    "FirstIteration": self.y[0],
+                    "FinalIteration": self.y[-1],
+                    "TotalGrowthAllIterations": self.y[-1] / self.y[0],
+                    "TotalScaleAllIterations": math.log(self.y[-1], self.y[0]),
             },
-
-            "_more_data": {
-                "GrowthRateSlopeYX": GrowthRateY / GrowthRateX,
-                "differenceYX_start": differenceYXstart,
-                "differenceYX_final": differenceYXfinal,
-            }
         }
         return info
 

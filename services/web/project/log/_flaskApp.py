@@ -41,8 +41,9 @@ def ViewToRedirectMultiplyLogsResult():
                 ))
 
     context = {
-        'title': 'title',
-        'description': 'description',
+        'title': 'LogXYoverPeriods',
+        'description': 'Helps calculate GrowthRate over 1 iter for both X and Y, '
+                       'also multiply X to Y and gives its GrowthRate over 1 iter and other info',
                 }
 
     return render_template('log/multiply_logs.html', context=context, form=formMultipliedLogs)
@@ -61,20 +62,20 @@ def ViewFromRedirectMultiplyLogsResult():
     log = LogXY(startLogX=startLogX, stopLogX=stopLogX, startValueXLog1=startValueXLog1,
                 startLogY=startLogY, stopLogY=stopLogY, startValueYLog1=startValueYLog1, iters=iters)
 
-    # return str([startLogX, stopLogX, startValueXLog1, startLogY,
-    #            stopLogY, startValueYLog1, iters])
-
+    logInfo = log.getInfo()
 
     x = log.x
     y = log.y
     xy = log._multiplyXY(log.x, log.y)
+
+
     #
     context = {
         'title': 'title',
         'description': 'description',
                 }
 
-    return render_template('log/multiply_logs_result.html', context=context, x=x, y=y, xy=xy)
+    return render_template('log/multiply_logs_result.html', context=context, x=x, y=y, xy=xy, data=logInfo)
 
 
 
