@@ -67,8 +67,50 @@
 <p></p>
 <p></p>
 </div>
+
+<h3>X-axis Prolonged</h3>
+<div class="container">
+    <div>
+        <ul class="list-group">
+            {% for item in xProlonged %}
+                <li class="list-group-item"
+                    class="list-group-item text-right"> {{ item }} </li>
+            {% endfor %}
+        </ul>
+    </div>
 <p></p>
 <p></p>
 <p></p>
+</div>
+
+<h3>Y-axis Prolonged</h3>
+<div class="container">
+    <div>
+        <ul class="list-group">
+            {% for item in yProlonged %}
+                <li class="list-group-item"
+                    class="list-group-item text-right"> {{ item }} </li>
+            {% endfor %}
+        </ul>
+    </div>
+<p></p>
+<p></p>
+<p></p>
+</div>
+
+<h3>XY-axis Prolonged</h3>
+<div class="container">
+    <div>
+        <ul class="list-group">
+            {% for item in xyProlonged %}
+                <li class="list-group-item"
+                    class="list-group-item text-right"> {{ item }} </li>
+            {% endfor %}
+        </ul>
+    </div>
+<p></p>
+<p></p>
+<p></p>
+</div>
 
 {% endblock %}

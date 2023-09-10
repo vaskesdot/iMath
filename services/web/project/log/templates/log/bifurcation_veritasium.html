@@ -3,6 +3,30 @@
 
 {% block content %}
 
-<h1>Not Implemented Yet</h1>
+
+<div class="container">
+		<form method="POST" id="form" class="form-inline">>
+		  <div class="form-group mb-5"
+				{{ form.hidden_tag() }}
+				{% for field in form if field.name not in ['csrf_token', 'submit'] -%}
+				<label> {{ field.label(class="form-label") }} </label>
+					{% if field.errors %}
+			 	 <div class="form-group mx-sm-3 mb-2">
+					<input type="number" class="form-control-plaintext">
+					{{ field(class="invalid") }}
+				</div>
+				<div class="invalid-feedback">
+					{% for e in field.errors %}
+					{{ e }}
+					{% endfor %}
+				</div>
+						{% else %}
+							{{ field(class="form-control") }}
+						{% endif %}
+				{% endfor %}
+			<p></p>
+			{{ form.submit() }}
+		</form>
+</div>
 
 {% endblock %}

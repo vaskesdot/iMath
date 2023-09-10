@@ -103,26 +103,45 @@ class LogXY:
         return x * y
 
     @staticmethod
-    def _divideXY(x: np.array, y: np.array):
-        return x / y
-
-    @staticmethod
-    def _divideYX(x: np.array, y: np.array):
-        return y / x
-
-    @staticmethod
-    def _plusYX(x: np.array, y: np.array):
-        return y + x
-
-    @staticmethod
-    def _minusYX(x: np.array, y: np.array):
-        return y - x
-
-    @staticmethod
-    def _minusXY(x: np.array, y: np.array):
-        return x - y
-
-    @staticmethod
     def _log(stop: float, start: float):
         return math.log(112.5, 25)
 
+
+    def prolongAllLogSpaceWithGrowthRate(self, itersMore: int,):
+        info = self.getInfo()
+        xGrowthRate = info['X']["GrowthOverIter1"]
+        yGrowthRate = info['Y']["GrowthOverIter1"]
+        xyGrowthRate = info['XY']["GrowthOverIter1"]
+        xBase = list(self.x)
+        yBase = list(self.y)
+        xyBase = list(self.xy)
+
+        for value in range(itersMore):
+            lastValueIter = xBase[-1] * xGrowthRate
+            xBase.append(lastValueIter)
+
+        for value in range(itersMore):
+            lastValueIter = yBase[-1] * yGrowthRate
+            yBase.append(lastValueIter)
+
+        for value in range(itersMore):
+            lastValueIter = xyBase[-1] * xyGrowthRate
+            xyBase.append(lastValueIter)
+
+        return xBase, yBase, xyBase
+
+class Bifurcation:
+    def __init__(self, growthRate: float, xN: float,  iters: int):
+        self.growthRate = growthRate
+        self.xN = xN
+        self.iters = iters
+
+    def calculate(self):
+        result = []
+        result.append(self.xN)
+        for iter in range(self.iters):
+            xNplus1 = result[-1] * self.growthRate * (1 - result[-1])
+            result.append(xNplus1)
+        return result
+
+# x+1=sin x

@@ -1,6 +1,7 @@
 from project.config import engine_sqlite, metadata_sqlite, connection_sqlite
 from project import forms
 from project.log._DevLogCalc import LogXY
+from project.log._DevLogCalc import Bifurcation
 
 from flask import Flask, render_template, redirect, url_for, request, g, Blueprint
 from sqlalchemy import Table
@@ -8,11 +9,13 @@ import pandas as pd
 from flask_wtf import FlaskForm
 from wtforms import FloatField, SubmitField, IntegerField
 
+
 log = Blueprint('log', __name__, template_folder='templates', static_folder='static')
 
 
-class MultipliedLogs(FlaskForm):
+class FormMultipliedLogs(FlaskForm):
     iters = IntegerField(label="How many iters over to build both LogSpace: ")
+    itersProlong = IntegerField(label="How many iters to prolong all LogSpace: ")
     startLogX = FloatField(label="LogX base: ")
     stopLogX = FloatField(label="of LogX: ")
     startValueXLog1 = FloatField(label="Use this number for LogXSpace start: ")
@@ -21,11 +24,17 @@ class MultipliedLogs(FlaskForm):
     startValueYLog1 = FloatField("Use this number for LogNSpace start: ")
     submit = SubmitField("Calculate: ")
 
+class FormBifurcation(FlaskForm):
+    growthRate = FloatField(label="growthRate: ")
+    xN = FloatField(label="xN: ")
+    iters = IntegerField(label="iters: ")
+    submit = SubmitField("Calculate: ")
+
 
 @log.route('/multiply_logs', methods=['GET', 'POST'])
 def ViewToRedirectMultiplyLogsResult():
 
-    formMultipliedLogs = MultipliedLogs()
+    formMultipliedLogs = FormMultipliedLogs()
 
     if formMultipliedLogs.is_submitted():
         return redirect(url_for('log.ViewFromRedirectMultiplyLogsResult',
@@ -37,6 +46,7 @@ def ViewToRedirectMultiplyLogsResult():
                    'stopLogY': formMultipliedLogs.stopLogY.data,
                    'startValueYLog1': formMultipliedLogs.startValueYLog1.data,
                    'iters': formMultipliedLogs.iters.data,
+                   'itersProlong': formMultipliedLogs.itersProlong.data,
                    }
                 ))
 
@@ -58,9 +68,11 @@ def ViewFromRedirectMultiplyLogsResult():
     stopLogY = float(request.args.get('stopLogY', default=1))
     startValueYLog1 = float(request.args.get('startValueYLog1', default=1))
     iters = int(request.args.get('iters', default=3))
+    itersProlong = int(request.args.get('itersProlong', default=3))
 
     log = LogXY(startLogX=startLogX, stopLogX=stopLogX, startValueXLog1=startValueXLog1,
-                startLogY=startLogY, stopLogY=stopLogY, startValueYLog1=startValueYLog1, iters=iters)
+                startLogY=startLogY, stopLogY=stopLogY, startValueYLog1=startValueYLog1,
+                iters=iters)
 
     logInfo = log.getInfo()
 
@@ -68,21 +80,85 @@ def ViewFromRedirectMultiplyLogsResult():
     y = log.y
     xy = log._multiplyXY(log.x, log.y)
 
+    allAxisProlong = log.prolongAllLogSpaceWithGrowthRate(int(itersProlong))
+    xProlonged = allAxisProlong[0]
+    yProlonged = allAxisProlong[1]
+    xyProlonged = allAxisProlong[2]
 
-    #
     context = {
         'title': 'Results for:',
         'description': f'LogX base {startLogX} of {stopLogX},  LogX base {startLogY} of {stopLogY}, ',
                 }
 
-    return render_template('log/multiply_logs_result.html', context=context, x=x, y=y, xy=xy, data=logInfo)
+    return render_template('log/multiply_logs_result.html', context=context,
+                           x=x, y=y, xy=xy,
+                           xProlonged=xProlonged, yProlonged=yProlonged, xyProlonged=xyProlonged,
+                           data=logInfo,)
 
 
 @log.route('/bifurcation_veritasium', methods=['GET', 'POST'])
+def ViewToRedirectBifurcationVeritasium():
+
+    form = FormBifurcation()
+
+    if form.is_submitted():
+        return redirect(url_for('log.ViewFromRedirectBifurcationVeritasium',
+                **{
+                   'growthRate': form.growthRate.data,
+                   'XN': form.xN.data,
+                   'iters': form.iters.data,
+                   }
+                ))
+
+    context = {
+        'title': 'Bifurcation Function',
+        'description': 'Xn+1=Gr*Xn(1-Xn)',
+                }
+
+    return render_template('log/bifurcation_veritasium.html', context=context, form=form )
+
+@log.route('/bifurcation_veritasium_result', methods=['GET', 'POST'])
 def ViewFromRedirectBifurcationVeritasium():
+    growthRate = float(request.args.get('growthRate', default=1))
+    xN = float(request.args.get('XN', default=1))
+    iters = int(request.args.get('iters', default=1))
 
-    return render_template('log/bifurcation_veritasium.html', )
 
+    space = Bifurcation(growthRate=growthRate, xN=xN, iters=iters)
+    result = space.calculate()
+
+    context = {
+        'title': 'Bifurcation Function',
+        'description': f'Over {iters} iters with {growthRate} growthRate',
+                }
+
+    return render_template('log/bifurcation_veritasium_result.html',
+                           context=context, x=result, index=range(len(result)))
+
+@log.errorhandler(404)
+def not_found(error):
+    context = {
+        'title': 'Sorry, Page Not Found',
+        'description': 'Check your link to resolve'
+    }
+
+    return render_template('log/error.html', context=context)
+
+
+@log.errorhandler(500)
+def server_error(error):
+
+    context = {
+        'title': "Oh, The Site can't handle the request ",
+        'description': ''
+    }
+
+    return render_template('log/error.html', context=context)
+
+
+@log.route('/')
+def index():
+    return redirect(url_for('log.ViewToRedirectMultiplyLogsResult'))
 
 
 
@@ -131,31 +207,7 @@ def ViewFromRedirectBifurcationVeritasium():
 #     df = pd.DataFrame(columns=table_columns, data=table_data)
 #     return df
 #
-# @climate.errorhandler(404)
-# def not_found(error):
-#     context = {
-#         'title': 'Sorry, Page Not Found',
-#         'description': 'Check your link to resolve the issue'
-#     }
-#
-#     return render_template('climate/error.html', context=context)
-#
-#
-# @climate.errorhandler(500)
-# def server_error(error):
-#
-#     context = {
-#         'title': "Oh, The Site can't handle the request ",
-#         'description': 'We will try to resolve the problem, we promise you :) '
-#     }
-#
-#     return render_template('climate/error.html', context=context)
-#
-#
-# @climate.route('/')
-# def index():
-#     return redirect(url_for('climate.select_country_how_will_change_over_years'))
-#
+
 #
 # @climate.route('/countries_most_affected_by_climate_change', methods=['GET'])
 # def most_affected():
