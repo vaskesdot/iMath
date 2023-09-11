@@ -135,11 +135,20 @@ def ViewFromRedirectBifurcationVeritasium():
     return render_template('log/bifurcation_veritasium_result.html',
                            context=context, x=result, index=range(len(result)))
 
+@log.route('/spec_model_a', methods=['GET', 'POST'])
+def ViewSpecModelA():
+    context = {
+        'title': 'Spec Model A',
+        'description': 'What it is, and how to use and when'
+    }
+
+    return render_template('log/spec_model_a.html', context=context)
+
 @log.errorhandler(404)
 def not_found(error):
     context = {
-        'title': 'Sorry, Page Not Found',
-        'description': 'Check your link to resolve'
+        'title': 'Page not found',
+        'description': 'Check the link'
     }
 
     return render_template('log/error.html', context=context)
